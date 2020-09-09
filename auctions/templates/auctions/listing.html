@@ -1,0 +1,52 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+{% if closed %}
+<div class="alert alert-primary" role="alert">
+  This bid has been closed.
+  Winner: <strong>{{winner}}</strong>
+</div>
+{% endif %}
+{% if message %}
+<button type="button" class= "btn btn-info">
+<a href="{% url 'add_watchlist' listing.id %}" style="color:white"> Add to Watchlist</a>
+</button>
+{% endif %}
+{% if trial %}
+<button type="button" class= "btn btn-info">
+<a href="{% url 'remove_watchlist' listing.id %}" style="color:white"> Remove from Watchlist</a>
+</button>
+{% endif %}
+{% if created %}
+<button type="button" class= "btn btn-danger" style="color:white">
+<a href="{% url 'close' listing.id %}"> Close Listing</a>
+</button>
+{% endif %}
+<br><br>
+<h1>{{listing.title}}</h1>
+<button type="button" class="btn btn-outline-primary">{{listing.category}}</button>
+<div>
+  <img src= "{{ listing.url}}" width = 40%>
+</div>
+<h5>Description</h5>
+{{listing.description}}
+<br>
+<strong>Current Bid:</strong>
+{{listing.start}}
+<form action="{% url 'bid' listing.id%}" method="post">
+    {% csrf_token %}
+    <input type="number" name="price" placeholder="Bid">
+    <button type="submit" class = "btn btn-success">Place Bid</button>
+</form>
+<hr>
+<h3>Comments</h3>
+{% for a in comments %}
+<p>{{a.comment}}</p>
+{% endfor %}
+
+<form action="{% url 'comment' listing.id %}" method="post">
+    {% csrf_token %}
+    <input name="comment" type="text" placeholder="Comment" >
+    <button type="submit" class = "btn btn-success">Add Comment</button>
+</form>
+{%endblock%}
